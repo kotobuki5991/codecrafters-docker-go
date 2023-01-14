@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	// Uncomment this block to pass the first stage!
 	"os"
 	"os/exec"
@@ -20,5 +21,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(string(output))
+	fmt.Println(strings.TrimRight(string(output), "\n"))
 }
