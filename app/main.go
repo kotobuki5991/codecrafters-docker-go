@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
+
 	// Uncomment this block to pass the first stage!
 	"os"
 	"os/exec"
@@ -22,6 +25,17 @@ func main() {
 	err := cmd.Run()
 	if err != nil {
 		fmt.Printf("Err: %v", err)
-		os.Exit(1)
+		errCode := getExitStatus(err)
+		os.Exit(errCode)
 	}
+}
+
+func getExitStatus(err error) int{
+	errMsg := err.Error()
+	msgAry := strings.Split(errMsg, " ")
+	errCode, err := strconv.Atoi(msgAry[len(msgAry)-1])
+	if err != nil {
+		fmt.Printf("Err: %v", err)
+	}
+	return errCode
 }
