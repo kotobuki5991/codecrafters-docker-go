@@ -49,3 +49,9 @@ You can now execute your program like this:
 ```sh
 mydocker run ubuntu:latest /usr/local/bin/docker-explorer echo hey
 ```
+
+- test in local
+```sh
+mydocker run ubuntu:latest /usr/local/bin/docker-explorer echo echo_stderr
+codecrafters test
+```

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	// Uncomment this block to pass the first stage!
 	"os"
 	"os/exec"
@@ -15,11 +14,14 @@ func main() {
 	args := os.Args[4:len(os.Args)]
 
 	cmd := exec.Command(command, args...)
-	output, err := cmd.Output()
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	err := cmd.Run()
 	if err != nil {
 		fmt.Printf("Err: %v", err)
 		os.Exit(1)
 	}
-
-	fmt.Println(strings.TrimRight(string(output), "\n"))
 }
