@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"strconv"
 	"strings"
+	"syscall"
 
 	// Uncomment this block to pass the first stage!
 	"os"
@@ -18,11 +20,36 @@ func main() {
 
 	cmd := exec.Command(command, args...)
 
-	cmd.Stdout = os.Stdout
+	var stdout bytes.Buffer
+	cmd.Stdout = &stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
+	setupMyDockerApp()
+
 	err := cmd.Run()
+	// exitステータスの確認
+	if err != nil {
+		fmt.Printf("Err: %v", err)
+		errCode := getExitStatus(err)
+		os.Exit(errCode)
+	}
+
+	// 標準出力の有無と内容確認
+	if stdout.String() == "" {
+		fmt.Print("No such file or directory")
+		os.Exit(2)
+	}else {
+		fmt.Println(strings.Trim(stdout.String(), "\n"))
+		os.Exit(1)
+	}
+}
+
+func setupMyDockerApp()  {
+	syscall.Chroot("/chroot")
+	os.Chdir("/chroot")
+	cpCmd := exec.Command("cp", "/usr/local/bin/docker-explorer", "chroot")
+	err := cpCmd.Run()
 	if err != nil {
 		fmt.Printf("Err: %v", err)
 		errCode := getExitStatus(err)
