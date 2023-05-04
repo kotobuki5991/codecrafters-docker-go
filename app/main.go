@@ -24,6 +24,9 @@ func main() {
 	cmd.Stdout = &stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Cloneflags: syscall.CLONE_NEWPID,
+	}
 
 	setupMyDockerApp()
 
@@ -47,14 +50,14 @@ func main() {
 
 func setupMyDockerApp()  {
 	syscall.Chroot("/chroot")
-	os.Chdir("/chroot")
-	cpCmd := exec.Command("cp", "/usr/local/bin/docker-explorer", "chroot")
-	err := cpCmd.Run()
-	if err != nil {
-		fmt.Printf("Err: %v", err)
-		errCode := getExitStatus(err)
-		os.Exit(errCode)
-	}
+	// os.Chdir("/chroot")
+	// cpCmd := exec.Command("cp", "/usr/local/bin/docker-explorer", "/chroot");
+	// err := cpCmd.Run()
+	// if err != nil {
+	// 	fmt.Printf("Err: %v", err)
+	// 	errCode := getExitStatus(err)
+	// 	os.Exit(errCode)
+	// }
 }
 
 func getExitStatus(err error) int{
